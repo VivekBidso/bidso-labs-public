@@ -2,7 +2,6 @@ services:
   - type: web
     name: bidso-labs-public
     runtime: static
-    region: singapore
     branch: main
     buildCommand: npm install && npm run build
     staticPublishPath: dist
