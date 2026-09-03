@@ -5,6 +5,9 @@ services:
     branch: main
     buildCommand: npm install && npm run build
     staticPublishPath: dist
+    envVars:
+      - key: VITE_API_BASE
+        value: https://bidso-labs-internal.onrender.com
     routes:
       - type: rewrite
         source: /*
