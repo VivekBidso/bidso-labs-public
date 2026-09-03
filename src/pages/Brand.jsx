@@ -13,7 +13,8 @@ export default function Brand() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
-  const canSubmit = company.trim() && contactName.trim() && email.trim() && !submitting;
+  const emailLooksValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const canSubmit = company.trim() && contactName.trim() && emailLooksValid && !submitting;
 
   async function handleSubmit() {
     if (!canSubmit) return;

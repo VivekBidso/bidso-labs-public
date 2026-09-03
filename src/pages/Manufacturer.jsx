@@ -43,7 +43,8 @@ export default function Manufacturer() {
     setCerts((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
   }
 
-  const canSubmit = legalName.trim() && contactName.trim() && email.trim() && ownsRights && termsAccepted && !submitting;
+  const emailLooksValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const canSubmit = legalName.trim() && contactName.trim() && emailLooksValid && ownsRights && termsAccepted && !submitting;
 
   async function handleSubmit() {
     if (!canSubmit) return;

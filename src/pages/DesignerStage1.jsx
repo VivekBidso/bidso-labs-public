@@ -53,10 +53,14 @@ export default function DesignerStage1() {
   // require at least one letter and enough digits to look non-trivial.
   const ipNumberLooksValid = !hasIp || hasIp === "No" || /[A-Za-z].*\d{3,}/.test(ipNumber);
 
+  const emailLooksValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+
   const canSubmit =
     !hardStopped &&
     fullName.trim() &&
-    email.trim() &&
+    emailLooksValid &&
+    finishStage.trim() &&
+    description.trim() &&
     warrantiesConfirmed &&
     termsAccepted &&
     (hasIp === "No" || ipNumberLooksValid) &&
