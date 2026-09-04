@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Check, Field, OptionGroup } from "../lib/ui";
-import { submitManufacturer } from "../lib/api";
+import { submitManufacturer, uploadFiles } from "../lib/api";
 
 const CERTS = ["BIS", "ASTM", "EN", "GCC Mark"];
 const INTENT_OPTIONS = [
@@ -70,7 +70,16 @@ export default function Manufacturer() {
         monthly_capacity: monthlyCapacity || null,
         terms_version: "1.0",
       });
-      navigate("/submitted", { state: result });
+
+      let uploadWarning = null;
+      if (photos.length) {
+        const { failedNames } = await uploadFiles(result.submission_id, photos);
+        if (failedNames.length) {
+          uploadWarning = `Your submission is in, but ${failedNames.length} photo${failedNames.length > 1 ? "s" : ""} didn't upload (${failedNames.join(", ")}). Email ${failedNames.length > 1 ? "them" : "it"} directly to labs@bidso.com along with your company name so we can match ${failedNames.length > 1 ? "them" : "it"} up.`;
+        }
+      }
+
+      navigate("/submitted", { state: { ...result, uploadWarning } });
     } catch (e) {
       setSubmitError(e.message || "Something went wrong — try again.");
     } finally {

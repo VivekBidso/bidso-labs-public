@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import { Banner } from "../lib/ui";
 
 export default function Submitted() {
   const { state } = useLocation();
@@ -9,6 +10,7 @@ export default function Submitted() {
   const submittedDate = state?.submitted_date || "—";
   const screenDecisionBy = state?.screen_decision_by || "—";
   const email = state?.email || "the email you gave us";
+  const uploadWarning = state?.uploadWarning;
 
   return (
     <div className="wrap">
@@ -20,6 +22,12 @@ export default function Submitted() {
           and you'll have a first decision within 10 business days. There's nothing else for you to do
           right now.
         </p>
+
+        {uploadWarning && (
+          <Banner kind="warn" title="One thing needs your attention">
+            {uploadWarning}
+          </Banner>
+        )}
 
         <div className="refbox" style={{ marginTop: 38, textAlign: "left", justifyContent: "center" }}>
           <div><div className="rk">Reference</div><div className="rv">{referenceNumber}</div></div>

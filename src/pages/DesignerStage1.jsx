@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Banner, Check, Field, OptionGroup } from "../lib/ui";
-import { submitDesignerStage1 } from "../lib/api";
+import { submitDesignerStage1, uploadFiles } from "../lib/api";
 
 const FINISH_OPTIONS = ["Raw idea", "Concept", "Engineering drawing", "Finished tooling"];
 
@@ -79,8 +79,6 @@ export default function DesignerStage1() {
         working_title: workingTitle || null,
         finish_stage: finishStage,
         description,
-        // File upload wiring (presigned URL flow) comes with Stage 1 backend work —
-        // this posts metadata only for now; see tech-architecture.md "How data flows".
         file_count: files.length,
         employer_relates: relatesToEmployer,
         made_on_employer_time: madeOnEmployerTime,
@@ -91,7 +89,16 @@ export default function DesignerStage1() {
         ip_number: hasIp === "Yes" ? ipNumber : null,
         terms_version: "1.0",
       });
-      navigate("/submitted", { state: result });
+
+      let uploadWarning = null;
+      if (files.length) {
+        const { failedNames } = await uploadFiles(result.submission_id, files);
+        if (failedNames.length) {
+          uploadWarning = `Your submission is in, but ${failedNames.length} file${failedNames.length > 1 ? "s" : ""} didn't upload (${failedNames.join(", ")}). Reply to your acknowledgement email and attach ${failedNames.length > 1 ? "them" : "it"} directly.`;
+        }
+      }
+
+      navigate("/submitted", { state: { ...result, uploadWarning } });
     } catch (e) {
       setSubmitError(e.message || "Something went wrong — try again.");
     } finally {
